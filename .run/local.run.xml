@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="local" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ALTERNATIVE_JRE_PATH" value="corretto-17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="HIDE_BANNER" value="true" />
+    <module name="springboot3_kotlin_webflux_boilerplate.main" />
+    <selectedOptions>
+      <option name="spring.boot.profiles" visible="false" />
+    </selectedOptions>
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.template.boilerplate.DemoApplication" />
+    <option name="VM_PARAMETERS" value="-XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+DisableExplicitGC " />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

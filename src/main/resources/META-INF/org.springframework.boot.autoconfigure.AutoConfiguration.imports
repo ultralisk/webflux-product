@@ -1,0 +1,18 @@
+# Spring Boot Actuator 관련
+org.springframework.boot.actuate.autoconfigure.availability.AvailabilityHealthContributorAutoConfiguration # 애플리케이션 가용성(Availability) 체크 기능이 필요 없으면 제거 가능
+org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration # 일반적인 Health 체크를 사용하지 않는다면 제거 가능
+org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration # Micrometer 기반의 Metrics 기능이 필요 없으면 제거 가능
+org.springframework.boot.actuate.autoconfigure.metrics.JvmMetricsAutoConfiguration # JVM 메트릭을 수집하지 않는다면 제거 가능
+org.springframework.boot.actuate.autoconfigure.metrics.integration.IntegrationMetricsAutoConfiguration # Micrometer와 연동된 통합 메트릭이 필요 없으면 제거 가능
+org.springframework.boot.actuate.autoconfigure.metrics.startup.StartupTimeMetricsListenerAutoConfiguration # 애플리케이션 부팅 시간 측정 기능이 필요 없으면 제거 가능
+org.springframework.boot.actuate.autoconfigure.metrics.task.TaskExecutorMetricsAutoConfiguration # TaskExecutor의 실행 성능 메트릭이 필요 없으면 제거 가능
+org.springframework.boot.actuate.autoconfigure.observation.ObservationAutoConfiguration # 애플리케이션 관찰(Observability) 기능을 사용하지 않는다면 제거 가능
+org.springframework.boot.actuate.autoconfigure.web.server.ManagementContextAutoConfiguration # 관리 서버 기능이 필요 없으면 제거 가능
+
+# Spring Boot DevTools 관련
+org.springframework.boot.devtools.autoconfigure.DevToolsDataSourceAutoConfiguration # 개발 환경에서 데이터베이스 초기화 기능이 필요 없으면 제거 가능
+org.springframework.boot.devtools.autoconfigure.LocalDevToolsAutoConfiguration # LiveReload, Classpath 변경 감지 기능이 필요 없으면 제거 가능
+
+# Spring Boot JMX 관련
+org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration # JMX를 사용하지 않는다면 제거 가능
+org.springframework.boot.actuate.autoconfigure.endpoint.jmx.JmxEndpointAutoConfiguration # JMX 엔드포인트를 사용하지 않는다면 제거 가능

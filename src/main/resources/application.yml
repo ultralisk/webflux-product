@@ -1,0 +1,112 @@
+# =============================================================
+# 📌 기본 애플리케이션 설정
+spring:
+  application:
+    name: demo  # 애플리케이션 이름 설정
+  main:
+    web-application-type: reactive # servlet, reactive
+  # ----------------------------------------------------------
+  # 📌 스테이징 및 운영 환경을 위한 프로파일
+  #  config:
+  #    import:
+  #      - application-local.yml
+  #    activate:
+  #      on-profile: local
+  # ----------------------------------------------------------
+  # 📌 devtools
+  devtools:
+    restart:
+      enabled: false  # 자동 재시작 기능 비활성화
+    livereload:
+      enabled: false  # LiveReload 기능 비활성화
+  # ----------------------------------------------------------
+  # 📌 devtools
+  # ----------------------------------------------------------
+  # 📌 webflux
+  webflux:
+    server:
+      netty:
+        connection-timeout: 5000
+        max-header-size: 8192
+  # 📌 H2설정
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  h2:
+    console:
+      enabled: true  # H2 웹 콘솔(http://localhost:9218/h2-console)
+  # ----------------------------------------------------------
+  # 📌 JSON 설정 (Jackson)
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+      write-dates-as-timestamps: false  # ISO format
+    deserialization:
+      fail-on-unknown-properties: false
+# =============================================================
+# 📌 로깅 설정
+logging:
+  level:
+    root: INFO
+    io.undertow: DEBUG
+    io.undertow.request.security: INFO
+    org.springframework.boot.autoconfigure: WARN
+    org.springframework.web: DEBUG
+    org.springframework.web.reactive: INFO
+    reactor.netty: INFO
+    com.template: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"  # 로그 포맷 설정
+# =============================================================
+# 📌 서버 설정
+server:
+  port: 9218
+  #  servlet:
+  #    context-path: /api  # default context
+  compression:
+    enabled: true  # response compress
+    min-response-size: 1024
+  http2:
+    enabled: true
+  undertow:
+    threads:
+      io: 16
+      worker: 256
+    buffer-size: 8192
+    direct-buffers: true
+    #max-http-post-size: 10485760 # max POST request(10MB)
+# =============================================================
+reactor:
+  netty:
+    requestRate: 5000  # 초당 요청 수
+    #ioSelectCount: 4
+    #ioWorkerCount: 8
+    ioSelectRateFactor: 5000   # 요청당 ioSelectCount 증가 단위
+    ioWorkerRateFactor: 1000   # 요청당 ioWorkerCount 증가 단위
+    maxConnections: 10000
+    pendingAcquireTimeout: 10000
+    pool:
+      maxIdleTime: 20000
+      maxLifeTime: 60000
+    tcp:
+      keepAlive: true
+# =============================================================
+# 📌 액추에이터 (서버 모니터링 기능)
+management:
+  server:
+    port: 9219
+  endpoint:
+    loggers:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "" # "health, loggers, metrics, info"
+  metrics:
+    enable:
+      reactor: false
+  jmx:
+    exposure:
+      exclude: "*"  # JMX 엔드포인트 비활성화

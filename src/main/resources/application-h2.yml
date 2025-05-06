@@ -1,0 +1,40 @@
+spring:
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      max-lifetime: 1800000
+    # mem
+    #url: jdbc:h2:mem:testdb
+    #driver-class-name: org.h2.Driver
+    #username: sa
+    #password:
+    # file
+    url: r2dbc:h2:file:///./data/testdb
+    username: sa
+    password:
+  r2dbc:
+    # mem
+    #url: r2dbc:h2:mem:///testdb
+    #username: sa
+    #password:
+    # file
+    #url: r2dbc:h2:file:///${user.dir}/data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE;
+    url: r2dbc:h2:file:///./data/testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    initialization-mode: never # always, never
+  sql:
+    init:
+      mode: never # always, never
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+  logging:
+    level:
+      org.springframework.r2dbc: TRACE
+      io.r2dbc.h2: DEBUG
