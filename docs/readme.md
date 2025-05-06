@@ -24,13 +24,176 @@ Webflux기반으로, coRouter 통해 실제 Handler를 매핑함(MVC의 Controll
 
 ## API
 ### 1) - 카테고리 별 최저가격 브랜드와 상품 가격, 총액을 조회
-- http://localhost:9218/product/findCheapestCategoryBrand
+- [GET] http://localhost:9218/product/findCheapestCategoryBrand
+- Response
+```json
+{
+    "status": 200,
+    "timestamp": "2025-05-06T18:06:59.194544300Z",
+    "message": "Success",
+    "data": {
+        "formattedCategories": [
+            {
+                "category": "상의",
+                "brand": "C",
+                "price": "10,000"
+            },
+            {
+                "category": "아우터",
+                "brand": "E",
+                "price": "5,000"
+            },
+            {
+                "category": "바지",
+                "brand": "D",
+                "price": "3,000"
+            },
+            {
+                "category": "스니커즈",
+                "brand": "A",
+                "price": "9,000"
+            },
+            {
+                "category": "가방",
+                "brand": "A",
+                "price": "2,000"
+            },
+            {
+                "category": "모자",
+                "brand": "D",
+                "price": "1,500"
+            },
+            {
+                "category": "양말",
+                "brand": "I",
+                "price": "1,700"
+            },
+            {
+                "category": "액세서리",
+                "brand": "F",
+                "price": "1,900"
+            }
+        ],
+        "total": "34,100"
+    }
+}
+```
 
 ### 2) - 단일 브랜드로 모든 카테고리 상품을 구매할 때 최저가격에 판매하는 브랜드와 카테고리의 상품가격, 총액을 조회
-- http://localhost:9218/product/findCheapestBrand
+- [GET] http://localhost:9218/product/findCheapestBrand
+- Response
+```json
+{
+    "status": 200,
+    "timestamp": "2025-05-06T18:08:03.560929400Z",
+    "message": "Success",
+    "data": {
+        "brand": "D",
+        "total": "36,100",
+        "categories": [
+            {
+                "category": "상의",
+                "price": "10,100"
+            },
+            {
+                "category": "아우터",
+                "price": "5,100"
+            },
+            {
+                "category": "바지",
+                "price": "3,000"
+            },
+            {
+                "category": "스니커즈",
+                "price": "9,500"
+            },
+            {
+                "category": "가방",
+                "price": "2,500"
+            },
+            {
+                "category": "모자",
+                "price": "1,500"
+            },
+            {
+                "category": "양말",
+                "price": "2,400"
+            },
+            {
+                "category": "액세서리",
+                "price": "2,000"
+            }
+        ]
+    }
+}
+```
 
 ### 3) - 카테고리 이름으로 최저, 최고 가격 브랜드와 상품 가격을 조회
-- http://localhost:9218/product/findCategoryPriceBrand?category=상의
-- 새로운 상품이 추가 되었을 때, data캐싱 을 다시 하려고 했지만 이부분은 구현하지 못함.
-- 구현의도: 어플리케이션 시작시 bulk로 data를 캐싱하고, `insert/update/delete`시 이 캐시에 데이터를 갱신 
-- 누락된 부분: `insert/update/delete`
+- [GET] http://localhost:9218/product/findCategoryPriceBrand?category=상의
+- Response
+```json
+{
+    "status": 200,
+    "timestamp": "2025-05-06T18:08:23.734368Z",
+    "message": "Success",
+    "data": {
+        "category": "상의",
+        "min": [
+            {
+                "brand": "C",
+                "price": "10,000"
+            }
+        ],
+        "max": [
+            {
+                "brand": "I",
+                "price": "11,400"
+            }
+        ]
+    }
+}
+```
+
+### 4) Insert/Update/Delete
+[POST] http://localhost:9218/product/insertProduct
+```json
+{
+    "id": 225,
+    "brand": "J",
+    "category": "상의",
+    "price": 11201
+}
+```
+[POST] http://localhost:9218/product/updateProduct
+```json
+{
+    "id": 225,
+    "brand": "J",
+    "category": "상의",
+    "price": 11201
+}
+```
+
+[POST] http://localhost:9218/product/deleteProduct
+```json
+{
+    "id": 225,
+    "brand": "J",
+    "category": "상의",
+    "price": 11201
+}
+```
+
+- 구현의도: 어플리케이션 시작시 bulk로 data를 캐싱
+- `util\ProductDataLoader`클래스내에서 5분마다 한번씩 갱신함.
+- 개선필요점(500개단위로 끊어서 backgound에서 로딩하는 등의 처리 필요)
+```kotlin
+    @Scheduled(fixedRate = 300000) // 5분
+    fun scheduleCacheRefresh() {
+        runBlocking {
+            logger.info("--- refreshCache ---")
+
+            refreshCache()
+        }
+    }
+```

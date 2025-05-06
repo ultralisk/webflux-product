@@ -11,7 +11,7 @@ class RouteHandler {
     fun endpointRouter(
         demoController: DemoController,
         errorController: ErrorController,
-        userController: ProductController,
+        productController: ProductController,
     ) = coRouter {
         "/api".nest {
             GET("/hello", demoController::handleHello)
@@ -38,15 +38,15 @@ class RouteHandler {
 
         // User
         "/product".nest {
-            GET("/getProduct", userController::getProduct)
+            GET("/getProduct", productController::getProduct)
 
-            GET("/findCheapestCategoryBrand", userController::findCheapestCategoryBrand)
-            GET("/findCheapestBrand", userController::findCheapestBrand)
-            GET("/findCategoryPriceBrand", userController::findCategoryPriceBrand)
+            GET("/findCheapestCategoryBrand", productController::findCheapestCategoryBrand)
+            GET("/findCheapestBrand", productController::findCheapestBrand)
+            GET("/findCategoryPriceBrand", productController::findCategoryPriceBrand)
 
-//            GET("/addProduct", userController::addProduct)
-//            GET("/updateProduct", userController::updateProduct)
-//            GET("/deleteProduct", userController::deleteProduct)
+            POST("/insertProduct", productController::insertProduct)
+            POST("/updateProduct", productController::updateProduct)
+            POST("/deleteProduct", productController::deleteProduct)
         }
     }
 }

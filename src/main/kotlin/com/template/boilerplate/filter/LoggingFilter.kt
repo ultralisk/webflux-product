@@ -1,13 +1,6 @@
 package com.template.boilerplate.filter
 
-import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Component
-import org.springframework.web.server.ServerWebExchange
-import org.springframework.web.server.WebFilter
-import org.springframework.web.server.WebFilterChain
-import reactor.core.publisher.Mono
-import java.nio.charset.StandardCharsets
-
+/*
 @Component
 class LoggingFilter : WebFilter {
     private val logger = LoggerFactory.getLogger(LoggingFilter::class.java)
@@ -15,17 +8,36 @@ class LoggingFilter : WebFilter {
     override fun filter(
         exchange: ServerWebExchange,
         chain: WebFilterChain,
-    ): Mono<Void> {
-        val request = exchange.request
+    ) = mono {
+        val cachedBody = exchange.request.body.cache()
+        val joinedBuffer = DataBufferUtils.join(cachedBody).awaitFirstOrNull()
 
-        return request.body
-            .map { dataBuffer ->
-                val bytes = ByteArray(dataBuffer.readableByteCount())
-                dataBuffer.read(bytes)
+        val bodyString =
+            joinedBuffer?.let { buffer ->
+                val bytes = ByteArray(buffer.readableByteCount())
+                buffer.read(bytes)
+                DataBufferUtils.release(buffer) // 버퍼 즉시 해제
                 String(bytes, StandardCharsets.UTF_8)
-            }.doOnNext { body ->
-                logger.info("Request Body: $body")
-                println("Request Body: $body")
-            }.then(chain.filter(exchange)) // Flux<Void> → Mono<Void> 변환
+            } ?: ""
+        logger.info("Request Body: $bodyString")
+
+        val bodyFlux =
+            if (joinedBuffer != null) {
+                Flux.just(joinedBuffer).filter { it != null } // Reactor 스타일 필터링
+            } else {
+                Flux.empty()
+            }
+
+        val mutatedExchange =
+            exchange
+                .mutate()
+                .request(
+                    object : ServerHttpRequestDecorator(exchange.request) {
+                        override fun getBody(): Flux<DataBuffer?> = bodyFlux
+                    },
+                ).build()
+
+        chain.filter(mutatedExchange).awaitFirstOrNull()
     }
 }
+*/
